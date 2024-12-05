@@ -14,7 +14,7 @@ class User(Base):
     email = Column(String(50),nullable=False)
     password = Column (String (50), nullable = False)
     subscription_date = Column (Date)
-    favorites = relationship('Favorite',backref="user") 
+    favorites = relationship('Favorite',back_populates='users') 
 
 
 class Planet (Base):
@@ -30,6 +30,7 @@ class Planet (Base):
     terrain = Column (String)
     surface = Column (String)
     climate = Column (String)
+    favorites = relationship('Favorite',back_populates='planets')
 
 
 class Character(Base):
@@ -44,6 +45,8 @@ class Character(Base):
     hair_color = Column (String)
     skin_color = Column (String) 
     homeworld = Column (Integer, ForeignKey(Planet.id)) 
+    favorites = relationship('favorites',back_populates='characters')
+    planet = relationship ('planets', back_populates='characters')
 
 
 class Vehicle (Base):
@@ -56,6 +59,7 @@ class Vehicle (Base):
     cargo_capacity = Column (String)
     max_atmosphering_speed = Column (String)
     owner = Column (String, ForeignKey(Character.id))
+    favorites = relationship('favorites',back_populates='vehicles')
 
     
     
@@ -68,6 +72,12 @@ class Favorite(Base):
     user_id = Column(Integer, ForeignKey(User.id))
     character_id = Column(Integer, ForeignKey(Character.id))
     planet_id = Column(Integer,ForeignKey(Planet.id))
+
+    user = relationship("users", back_populates="favorites")
+    character = relationship("characters", back_populates="favorites")
+    planet = relationship("planets", back_populates="favorites")
+    vehicle = relationship("vehicles", back_populates="favorites")
+    
 
     def to_dict(self):
         return {}
